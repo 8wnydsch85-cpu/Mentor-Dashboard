@@ -230,6 +230,13 @@ tfoot td{font-family:var(--mono);font-size:.75rem;color:var(--muted);border-top:
 .authbox{width:100%;max-width:440px;display:flex;flex-direction:column;gap:16px;border:1px solid var(--line);background:var(--surface);padding:28px;animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
 .signbar{max-width:1120px;margin:0 auto 18px;display:flex;justify-content:flex-end;align-items:center;gap:12px;font-size:.8rem;color:var(--faint)}
 .signbar .btn{padding:5px 12px;font-size:.78rem}
+.authf{display:flex;flex-direction:column;gap:12px}
+.authf .field input{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:.95rem}
+.authf .field label{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.authf .btn{align-self:flex-start}
+.pwbox{max-width:1120px;margin:-8px auto 22px;display:flex;flex-wrap:wrap;align-items:end;justify-content:flex-end;gap:12px}
+.pwbox .field{width:min(280px,100%)}
+.pwbox .field input{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
 /* boot & student */
 .boot{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:6px;padding-block:20px}
 .boot .sub{animation:breathe 1.6s ease-in-out infinite}
@@ -405,13 +412,23 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;ba
     <span class="eyebrow">Mentor Ledger</span>
     <h1 style="font-size:2.2rem">Sign in</h1>
     <div id="authForm">
-      <p class="sub">Enter the email your mentor invited. We will send you a sign-in link.</p>
-      <form class="add" id="authEmailForm"><input type="email" id="authEmail" placeholder="you@example.com" aria-label="Email" required autocomplete="email"><button class="btn">Send link</button></form>
+      <form class="authf" id="authEmailForm">
+        <div class="field"><label for="authEmail">Email</label><input type="email" id="authEmail" name="email" placeholder="you@example.com" required autocomplete="username"></div>
+        <div class="field"><label for="authPass">Password</label><input type="password" id="authPass" name="password" autocomplete="current-password" placeholder="Leave empty to get a link by email"></div>
+        <button class="btn" id="authGo">Sign in</button>
+      </form>
+      <p class="sub" style="margin-top:12px">No password yet? Enter only your email and we will send a sign-in link. Once inside, set a password from the top of the page so you can sign in instantly next time. Students: use the email your mentor invited.</p>
     </div>
     <p class="sub" id="authMsg" aria-live="polite"></p>
   </div>
 </div>
-<div class="signbar" id="signBar" hidden><span id="signWho"></span><button type="button" class="btn ghost" id="signOut">Sign out</button></div>
+<div class="signbar" id="signBar" hidden><span id="signWho"></span><button type="button" class="btn ghost" id="pwToggle">Set password</button><button type="button" class="btn ghost" id="signOut">Sign out</button></div>
+<form class="pwbox" id="pwBox" hidden>
+  <input type="text" id="pwUser" name="username" autocomplete="username" hidden>
+  <div class="field"><label for="pwNew">New password</label><input type="password" id="pwNew" name="new-password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></div>
+  <button class="btn">Save password</button>
+  <span class="sub" id="pwMsg" aria-live="polite"></span>
+</form>
 
 <div class="boot" id="boot"><span class="eyebrow">Mentor Ledger</span><span class="sub">Opening…</span></div>
 
@@ -753,19 +770,30 @@ async function connectSupabase(){
   const $=id=>document.getElementById(id);
   const showAuth=msg=>{$("boot").hidden=true;$("authScreen").hidden=false;if(msg){$("authForm").hidden=true;$("authMsg").textContent=msg;}};
   if(!window.supabase||SUPABASE_URL.includes("YOUR-PROJECT")){showAuth("This site is not connected yet. Add your Supabase project URL and anon key at the top of index.html, then upload it again.");return new Promise(()=>{});}
-  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  let base=SUPABASE_URL.trim();try{base=new URL(base).origin;}catch(e){}
+  if(!/\.supabase\.co$/.test(base)){showAuth("The Supabase address at the top of index.html is not right. It should look like https://abcdefghijklmnop.supabase.co with nothing after it.");return new Promise(()=>{});}
+  const sb=window.supabase.createClient(base,SUPABASE_ANON_KEY.trim(),{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}});
   const {data:{session}}=await sb.auth.getSession();
   if(!session){
     showAuth("");
     sb.auth.onAuthStateChange((ev,s)=>{if(s)location.replace(location.origin+location.pathname);});
-    $("authEmailForm").addEventListener("submit",async e=>{e.preventDefault();const email=$("authEmail").value.trim();if(!email)return;
+    const passIn=$("authPass"),go=$("authGo");
+    const label=()=>{go.textContent=passIn.value?"Sign in":"Email me a link";};label();passIn.addEventListener("input",label);
+    $("authEmailForm").addEventListener("submit",async e=>{e.preventDefault();const email=$("authEmail").value.trim(),pw=passIn.value;if(!email)return;
+      if(pw){$("authMsg").textContent="Signing in…";
+        const {error}=await sb.auth.signInWithPassword({email,password:pw});
+        $("authMsg").textContent=error?("That did not work: "+error.message+". If you have not set a password yet, leave it empty to get a link."):"Signed in.";return;}
       $("authMsg").textContent="Sending…";
       const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:location.origin+location.pathname}});
-      $("authMsg").textContent=error?("That did not work: "+error.message+". Check that your mentor has invited this email."):"Check your inbox for a sign-in link. You can close this tab.";});
+      $("authMsg").textContent=error?("That did not work: "+error.message+". If this email has not been invited yet, it cannot sign in."):"Check your inbox for a sign-in link. Open it in this same browser, not inside your email app.";});
     return new Promise(()=>{});
   }
   if(location.hash&&/access_token|type=/.test(location.hash))history.replaceState(null,"",location.pathname);
-  $("signBar").hidden=false;$("signWho").textContent=session.user.email||"";
+  $("signBar").hidden=false;$("signWho").textContent=session.user.email||"";$("pwUser").value=session.user.email||"";
+  $("pwToggle").onclick=()=>{const b=$("pwBox");b.hidden=!b.hidden;if(!b.hidden)$("pwNew").focus();};
+  $("pwBox").addEventListener("submit",async e=>{e.preventDefault();const pw=$("pwNew").value;if(pw.length<8){$("pwMsg").textContent="Use at least 8 characters.";return;}
+    $("pwMsg").textContent="Saving…";const {error}=await sb.auth.updateUser({password:pw});
+    $("pwMsg").textContent=error?("Not saved: "+error.message):"Saved. Next time, sign in with your email and this password.";if(!error)$("pwNew").value="";});
   $("signOut").onclick=async()=>{await sb.auth.signOut();location.replace(location.origin+location.pathname);};
   return {db:makeDb(sb),user:makeUser(sb,session)};
 }
