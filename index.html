@@ -296,6 +296,44 @@ tfoot td{font-family:var(--mono);font-size:.75rem;color:var(--muted);border-top:
 .ccard dd{margin:0;font-family:var(--mono);font-size:.82rem}
 #cDetail.enter{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
 
+/* attendance */
+.attbar{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:end}
+.attbar .field{width:170px}
+.attbar .field.grow{flex:1 1 240px;width:auto}
+.attbar .field input{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+.alist{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface)}
+.arow{display:grid;grid-template-columns:150px auto minmax(0,1fr);gap:12px 18px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);transition:background .2s}
+.arow:last-child{border-bottom:0}
+.arow:hover{background:var(--raised)}
+.an{font-family:var(--display);font-size:1.2rem}
+.seg.att{flex-wrap:wrap;border-radius:12px}
+.seg.att button{padding:6px 14px}
+.amin{display:flex;align-items:center;gap:8px;animation:rise .3s cubic-bezier(.2,.7,.2,1) both}
+.amin input{width:64px;background:transparent;border:0;border-bottom:1px solid var(--line-strong);padding:5px 2px;font-family:var(--mono);font-size:.95rem;text-align:center}
+.amin input:focus{border-bottom-color:var(--fg);outline:none}
+.amin span{font-size:.82rem;color:var(--muted)}
+@media (max-width:640px){.arow{grid-template-columns:minmax(0,1fr)}}
+.attfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ccard.static:hover{transform:none}
+@media (min-width:900px){#attCards{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.ccard.warn{border-color:var(--line-strong)}
+.wnote{font-size:.76rem;font-weight:600;color:var(--fg)}
+.wnote::before{content:"● "}
+.ahist{min-width:640px}
+.ahist tbody tr{cursor:pointer}
+.ahist tbody tr:hover td{background:var(--raised)}
+.ahist tr.sel td{background:var(--raised)}
+.ahist td:first-child{font-weight:600;font-size:.84rem;font-family:var(--body)}
+.ahist .hn{display:block;font-weight:400;font-size:.72rem;color:var(--faint);max-width:220px;overflow-wrap:anywhere}
+.hc{display:inline-flex;align-items:center;gap:5px}
+.hc .dot{width:11px;height:11px;display:inline-block}
+.mm{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.exc{font-family:var(--mono);font-size:.7rem;border:1px solid var(--line-strong);border-radius:4px;padding:0 4px;color:var(--muted);font-weight:500}
+.faint{color:var(--faint)}
+.pn2{font-family:var(--mono);color:var(--muted)}
+.empty-cell{color:var(--faint);text-align:left!important;padding:16px!important}
+.legend .exc{margin-right:2px}
+
 /* settings */
 .vtab.gear{margin-left:auto;display:grid;place-items:center;padding:8px 4px 10px}
 .vtab.gear svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
@@ -432,44 +470,11 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;ba
 
 <div class="boot" id="boot"><span class="eyebrow">Mentor Ledger</span><span class="sub">Opening…</span></div>
 
-<div class="wrap" id="studentApp" hidden>
-  <header>
-    <div class="top">
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <span class="eyebrow" id="stEyebrow">Haftalık çetele</span>
-        <h1 id="stTitle">My çetele</h1>
-      </div>
-      <span class="status" id="stStatus"></span>
-    </div>
-  </header>
-  <div class="view">
-    <section id="stJoin" hidden>
-      <div class="joinbox">
-        <h2>Welcome</h2>
-        <p class="sub">Type your name so your mentor knows whose çetele this is. Only you and your mentor can see what you enter here.</p>
-        <form class="add" id="stJoinForm"><input id="stNameIn" placeholder="Your name" aria-label="Your name" required><button class="btn">Start my çetele</button></form>
-      </div>
-    </section>
-    <div id="stMain" class="view" hidden>
-      <div class="weekbar">
-        <span class="when" id="stHello"></span>
-        <div class="weeknav" aria-label="Week">
-          <button id="stPrev" type="button" aria-label="Previous week">‹</button>
-          <span class="lbl" id="stWeekLbl">—</span>
-          <button id="stNext" type="button" aria-label="Next week">›</button>
-          <button class="today" id="stThis" type="button">This week</button>
-        </div>
-      </div>
-      <section>
-        <div class="days" id="stDays" role="tablist" aria-label="Day"></div>
-        <div class="daycard" id="stDayCard"></div>
-      </section>
-      <section>
-        <div class="sechead"><h2>This week</h2><span class="sub">Totals update as you fill in each day.</span></div>
-        <div class="gridwrap"><table class="cet" id="stTable" aria-label="This week's çetele"></table></div>
-      </section>
-    </div>
-    <p class="sub privacy">Your çetele is private: other students cannot see it. Your mentor can.</p>
+<div class="authwrap" id="noAccess" hidden>
+  <div class="authbox">
+    <span class="eyebrow">Mentor Ledger</span>
+    <h1 style="font-size:2.2rem">Mentor only</h1>
+    <p class="sub">This dashboard is for the group's mentor. The account you signed in with does not have access. If that is a mistake, sign out and sign in with the mentor's email.</p>
   </div>
 </div>
 
@@ -485,7 +490,7 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;ba
     <nav class="vtabs" role="tablist" aria-label="Sections">
       <button role="tab" class="vtab" id="tab-programme" data-view="programme" aria-selected="true" aria-controls="view-programme">Programme</button>
       <button role="tab" class="vtab" id="tab-tecvid" data-view="tecvid" aria-selected="false" aria-controls="view-tecvid">Tecvid</button>
-      <button role="tab" class="vtab" id="tab-cetele" data-view="cetele" aria-selected="false" aria-controls="view-cetele">Çetele</button>
+      <button role="tab" class="vtab" id="tab-attendance" data-view="attendance" aria-selected="false" aria-controls="view-attendance">Attendance</button>
       <button role="tab" class="vtab gear" id="tab-settings" data-view="settings" aria-selected="false" aria-controls="view-settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9c.26.6.85 1 1.51 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"/></svg></button>
       <span class="vind" id="vind" aria-hidden="true"></span>
     </nav>
@@ -544,7 +549,6 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;ba
         <input type="date" id="logDate" aria-label="Session date" required>
         <input id="logTitle" placeholder="Topic, e.g. Sabır — Hz. Eyyûb" aria-label="Session topic" required>
         <textarea id="logNotes" placeholder="What went well, who needs follow-up, what to do next time" aria-label="Session notes"></textarea>
-        <div class="att" id="logAtt"><span class="lab">Present:</span></div>
         <button class="btn">Save session</button>
       </form>
       <div class="list" id="logList"></div>
@@ -575,35 +579,34 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;ba
     </section>
   </div>
 
-  <div class="view" id="view-cetele" role="tabpanel" aria-labelledby="tab-cetele" hidden>
-    <div class="weekbar">
-      <span class="when">Students fill these in themselves. You can read every çetele; they can only see their own.</span>
-      <div class="weeknav" aria-label="Week">
-        <button id="cPrev" type="button" aria-label="Previous week">‹</button>
-        <span class="lbl" id="cWeekLbl">—</span>
-        <button id="cNext" type="button" aria-label="Next week">›</button>
-        <button class="today" id="cThis" type="button">This week</button>
-      </div>
+  <div class="view" id="view-attendance" role="tabpanel" aria-labelledby="tab-attendance" hidden>
+    <div class="stats">
+      <div class="stat"><span class="v" id="aSess">0</span><span class="k">Sessions recorded</span></div>
+      <div class="stat"><span class="v" id="aRate">—</span><span class="k">Group attendance</span><div class="bar"><i id="aRateBar"></i></div></div>
+      <div class="stat"><span class="v" id="aLate">0</span><span class="k">Late arrivals</span></div>
+      <div class="stat"><span class="v" id="aAvg">—</span><span class="k">Average minutes late</span></div>
     </div>
+
     <section>
-      <div class="sechead"><h2>Your talebe</h2><span class="sub" id="cCount"></span></div>
-      <div class="cards" id="cCards"></div>
-    </section>
-    <section id="cDetail" hidden>
-      <div class="sechead"><h2 id="cDetailName"></h2><span class="sub" id="cDetailAcct"></span></div>
-      <div class="gridwrap"><table class="cet" id="cTable" aria-label="Selected student's çetele"></table></div>
-    </section>
-    <section>
-      <div class="sgroup">
-        <div class="shead"><h3>Inviting students</h3><p>How to give each student their own çetele.</p></div>
-        <div class="sbody">
-          <ol class="steps">
-            <li><b>Invite them in Supabase</b><span>In your Supabase project open Authentication, then Users, then Invite user, and enter the student's email. Only invited emails can sign in.</span></li>
-            <li><b>They open the site and sign in</b><span>They follow the invitation email, or enter their email on the site to get a sign-in link. They only ever see their own çetele; the programme, tecvid and settings tabs and everything you record stay hidden.</span></li>
-            <li><b>They type their name once</b><span>Their çetele then appears here, matched to their account.</span></li>
-          </ol>
-        </div>
+      <div class="sechead"><h2>Take attendance</h2><span class="status" id="attStatus"></span></div>
+      <div class="attbar">
+        <div class="field"><label for="attDate">Session date</label><input type="date" id="attDate"></div>
+        <div class="field grow"><label for="attNote">Note</label><input id="attNote" placeholder="e.g. Sohbet at the ev, moved to Sunday"></div>
+        <button type="button" class="btn ghost" id="attAllOn">Everyone on time</button>
       </div>
+      <div class="alist" id="attRows"></div>
+      <div class="attfoot"><span class="sub" id="attCount"></span><button type="button" class="btn ghost" id="attDel" hidden>Delete this session</button></div>
+    </section>
+
+    <section>
+      <div class="sechead"><h2>By student</h2><span class="sub">Excused absences are left out of the attendance rate.</span></div>
+      <div class="cards" id="attCards"></div>
+    </section>
+
+    <section>
+      <div class="sechead"><h2>History</h2><span class="sub">Click a session to open it above.</span></div>
+      <div class="gridwrap"><table class="matrix ahist" id="attHist" aria-label="Attendance history"></table></div>
+      <div class="legend"><span><i class="dot know"></i>On time</span><span><i class="dot learning"></i>Late</span><span><i class="dot not"></i>Absent</span><span><b class="exc">E</b>Excused</span></div>
     </section>
   </div>
 
@@ -656,7 +659,7 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;ba
           <div class="srow"><div><b>Arabic text size</b><span>For the practice ayahs in the tecvid lessons.</span></div>
             <div class="seg" role="radiogroup" aria-label="Arabic text size"><button type="button" role="radio" data-arsize="s" aria-checked="false">Small</button><button type="button" role="radio" data-arsize="m" aria-checked="true">Medium</button><button type="button" role="radio" data-arsize="l" aria-checked="false">Large</button></div></div>
           <div class="srow"><div><b>Open on</b><span>The tab shown when you open the dashboard.</span></div>
-            <select id="setStart" data-set="startView" class="sel"><option value="">Last tab used</option><option value="programme">Programme</option><option value="tecvid">Tecvid</option></select></div>
+            <select id="setStart" data-set="startView" class="sel"><option value="">Last tab used</option><option value="programme">Programme</option><option value="tecvid">Tecvid</option><option value="attendance">Attendance</option></select></div>
         </div>
       </div>
     </section>
@@ -926,7 +929,7 @@ const ACTIVITIES=["Basketball or soccer before sohbet","Hike at Mount Tom or the
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const SIDS=["s1","s2","s3","s4","s5"];
-const state={settings:{},roster:{},week:{},tajweed:{},events:[],log:[],kitap:{},quran:{},ezber:{}};
+const state={att:{},settings:{},roster:{},week:{},tajweed:{},events:[],log:[],kitap:{},quran:{},ezber:{}};
 function flash(sel){const el=document.querySelector(sel);if(el){el.classList.remove("just");void el.offsetWidth;el.classList.add("just");}}
 function tween(el,to,f){const from=el._v==null?0:el._v;el._v=to;if(from===to&&el.textContent){return;}
   const reduce=(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||document.documentElement.classList.contains("nomotion");
@@ -1118,12 +1121,16 @@ function renderEvents(){
   if(up.length){const d=new Date(up[0].date+"T12:00");const days=Math.round((d-new Date(todayS+"T12:00"))/864e5);$("sNext").textContent=days===0?"Today":days+"d";$("sNextK").textContent=up[0].title;}
   else{$("sNext").textContent="—";$("sNextK").textContent="Next event";}
 }
+function logAtt(e){const r=state.att[e.date];
+  if(r&&r.marks&&Object.keys(r.marks).length){const pres=SIDS.filter(s=>["ontime","late"].includes((r.marks[s]||{}).st));const late=SIDS.filter(s=>(r.marks[s]||{}).st==="late");
+    return pres.length+"/5 present"+(late.length?" · late: "+late.map(s=>esc(student(s).name)).join(", "):"");}
+  if(e.present&&e.present.length)return e.present.length+"/5 present: "+e.present.map(s=>esc(student(s).name)).join(", ");
+  return "Attendance not taken for this date";}
 function renderLog(){
-  $("logAtt").innerHTML='<span class="lab">Present:</span>'+SIDS.map(s=>'<button type="button" class="chip" data-att="'+s+'" aria-pressed="'+(attSel.has(s))+'">'+esc(student(s).name)+'</button>').join("");
   const items=[...state.log].sort((a,b)=>b.date.localeCompare(a.date));
-  $("logList").innerHTML=items.length?items.map(e=>'<div class="entry"><span class="d">'+esc(fmt(new Date(e.date+"T12:00")))+'</span><div class="b"><strong>'+esc(e.title)+'</strong>'+(e.notes?'<p>'+esc(e.notes)+'</p>':'')+'<div class="a">'+(e.present&&e.present.length?e.present.length+"/5 present: "+e.present.map(s=>esc(student(s).name)).join(", "):"Attendance not recorded")+'</div></div><button class="x" data-lx="'+e.id+'" aria-label="Delete entry">×</button></div>').join(""):'<div class="empty">No sessions logged yet. Record each sohbet after it ends.</div>';
+  $("logList").innerHTML=items.length?items.map(e=>'<div class="entry"><span class="d">'+esc(fmt(new Date(e.date+"T12:00")))+'</span><div class="b"><strong>'+esc(e.title)+'</strong>'+(e.notes?'<p>'+esc(e.notes)+'</p>':'')+'<div class="a">'+logAtt(e)+'</div></div><button class="x" data-lx="'+e.id+'" aria-label="Delete entry">×</button></div>').join(""):'<div class="empty">No sessions logged yet. Record each sohbet after it ends.</div>';
 }
-function renderAll(){applySettings();renderSettings();renderWeek();renderRoster();renderTajweed();renderEvents();renderLog();}
+function renderAll(){applySettings();renderSettings();renderWeek();renderRoster();renderTajweed();renderEvents();renderLog();renderAttendance();}
 
 // ---------- events ----------
 let attSel=new Set();
@@ -1187,7 +1194,7 @@ $("tecUnits").addEventListener("change",e=>{const el=e.target;const d=el.dataset
   if(d.us){setTst(d.us,d.u,el.value);renderTajweed();saveTec();}
 });
 // view tabs
-const VIEWS=["programme","tecvid","cetele","settings"];
+const VIEWS=["programme","tecvid","attendance","settings"];
 function moveInd(){const t=document.querySelector('.vtab[aria-selected="true"]');const ind=$("vind");if(!t||!ind)return;ind.style.width=t.offsetWidth+"px";ind.style.transform="translateX("+t.offsetLeft+"px)";}
 function showView(v,animate){if(!VIEWS.includes(v))v="programme";
   VIEWS.forEach(x=>{const on=x===v;$("tab-"+x).setAttribute("aria-selected",on);const p=$("view-"+x);p.hidden=!on;
@@ -1202,10 +1209,9 @@ window.addEventListener("resize",moveInd);
 $("eventAdd").addEventListener("submit",e=>{e.preventDefault();const d=$("evDate").value,t=$("evTitle").value.trim();if(!d||!t||!db)return;
   $("evTitle").value="";write("events",()=>db.collection("events").add({date:d,title:t}));});
 $("eventList").addEventListener("click",e=>{const x=e.target.closest("[data-ex]");if(!x||!db)return;const id=x.dataset.ex;write("events/"+id,()=>db.doc("events/"+id).delete());});
-$("logAtt").addEventListener("click",e=>{const b=e.target.closest("[data-att]");if(!b)return;const s=b.dataset.att;attSel.has(s)?attSel.delete(s):attSel.add(s);b.setAttribute("aria-pressed",attSel.has(s));});
 $("logAdd").addEventListener("submit",e=>{e.preventDefault();const d=$("logDate").value,t=$("logTitle").value.trim();if(!d||!t||!db)return;
-  const entry={date:d,title:t,notes:$("logNotes").value.trim(),present:[...attSel]};
-  $("logTitle").value="";$("logNotes").value="";attSel=new Set();renderLog();
+  const entry={date:d,title:t,notes:$("logNotes").value.trim()};
+  $("logTitle").value="";$("logNotes").value="";renderLog();
   write("log",()=>db.collection("log").add(entry));});
 $("logList").addEventListener("click",e=>{const x=e.target.closest("[data-lx]");if(!x||!db)return;const id=x.dataset.lx;write("log/"+id,()=>db.doc("log/"+id).delete());});
 
@@ -1283,125 +1289,96 @@ function subscribeWeek(){
   weekRef=db.doc("weeks/"+weekId());
   unsubWeek=weekRef.onSnapshot(s=>{state.week=s.exists?{...s.data()}:{};renderWeek();});
 }
-// ---------- çetele ----------
-const COLS=[
-  {k:"quran",t:"Qur'an pages",type:"num"},
-  {k:"book",t:"Book pages",type:"num"},
-  {k:"prayers",t:"Prayers on time",type:"pray"},
-  {k:"kaza",t:"Make-up prayer",type:"num"},
-  {k:"tahajjud",t:"Tahajjud",type:"yes"},
-  {k:"dhikr",t:"Dhikr",type:"num"},
-  {k:"surah",t:"Surah practice",type:"yes"},
-  {k:"screen",t:"Screen time (hours)",type:"dec"},
-  {k:"kind",t:"Kindness to parents",type:"yes"},
-  {k:"notes",t:"Surah name / notes",type:"text"}
-];
-const DK=["mon","tue","wed","thu","fri","sat","sun"];
-const DN=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-function wkOf(d){const {y,w}=isoWeek(d);return y+"-W"+String(w).padStart(2,"0");}
-function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
-function weekLabel(mon){return wkOf(mon).replace("-W"," · Week ")+" · "+fmt(mon)+"–"+fmt(addDays(mon,6));}
-const isNum=v=>v!==""&&v!=null&&!isNaN(+v);
-function filled(day){return day&&COLS.some(c=>c.type==="yes"?day[c.k]===true:(c.type==="text"?!!day[c.k]:isNum(day[c.k])));}
-function totals(days){const t={};COLS.forEach(c=>{const vals=DK.map(k=>(days[k]||{})[c.k]);
-  if(c.type==="yes")t[c.k]=vals.filter(v=>v===true).length+"/7";
-  else if(c.type==="dec"){const n=vals.filter(isNum).map(Number);t[c.k]=n.length?(n.reduce((a,b)=>a+b,0)/n.length).toFixed(1)+" avg":"";}
-  else if(c.type==="text")t[c.k]="";
-  else{const n=vals.filter(isNum).map(Number);t[c.k]=n.length?String(n.reduce((a,b)=>a+b,0))+(c.type==="pray"?"/35":""):"";}});return t;}
-function cell(c,v){if(c.type==="yes")return v===true?'<span class="yes" aria-label="Yes">✓</span>':'';if(!isNum(v)&&c.type!=="text")return "";
-  if(c.type==="dec")return (+v).toFixed(1);if(c.type==="text")return esc(v||"");return esc(v);}
-function cetTable(days,mon,onDay){days=days||{};const t=totals(days);const todayS=ymd(new Date());
-  let h='<thead><tr><th scope="col">Day</th><th scope="col">Date</th>'+COLS.map(c=>'<th scope="col">'+esc(c.t)+'</th>').join("")+'</tr></thead><tbody>';
-  DK.forEach((k,i)=>{const d=addDays(mon,i);const day=days[k]||{};
-    h+='<tr class="'+(ymd(d)===todayS?'today ':'')+(onDay===i?'sel':'')+'"><td>'+DN[i]+'</td><td class="dt">'+d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+'</td>'+COLS.map(c=>'<td class="'+c.type+'">'+cell(c,day[c.k])+'</td>').join("")+'</tr>';});
-  h+='</tbody><tfoot><tr><td>Weekly total</td><td></td>'+COLS.map(c=>'<td>'+esc(t[c.k])+'</td>').join("")+'</tr></tfoot>';return h;}
-
-// student mode
-let userCap=null,myId=null,stWeek=mondayOf(new Date()),stDayIdx=((new Date().getDay()+6)%7),stDays={},stUnsub=null,stName="";
-function stStatus(t){$("stStatus").textContent=t;}
-function stWrite(fn){if(!db)return;stStatus("Saving…");const q=(queues.st||Promise.resolve()).then(fn).then(()=>stStatus("Saved"),e=>stStatus("Not saved — "+((e&&e.message)||"try again")));queues.st=q;}
-function stRef(){return db.doc("cetele/"+myId+"/weeks/"+wkOf(stWeek));}
-function stSubscribe(){if(stUnsub)stUnsub();stDays={};renderStudent();stUnsub=stRef().onSnapshot(sn=>{stDays=sn.exists?{...(sn.data().days||{})}:{};renderStudent();});}
-function renderStudent(){
-  $("stWeekLbl").textContent=weekLabel(stWeek);
-  $("stHello").textContent="Esselamu aleykum, "+stName+".";
-  $("stDays").innerHTML=DK.map((k,i)=>{const d=addDays(stWeek,i);return '<button type="button" role="tab" class="dayp" id="stday-'+i+'" data-day="'+i+'" aria-selected="'+(i===stDayIdx)+'"><b>'+DN[i].slice(0,3)+'</b><span>'+d.getDate()+'</span>'+(filled(stDays[k])?'<i class="fdot" aria-label="filled in"></i>':'')+'</button>';}).join("");
-  const a=document.activeElement;const keep=a&&a.closest&&a.closest("#stDayCard")?a.id:null;
-  const k=DK[stDayIdx],day=stDays[k]||{},d=addDays(stWeek,stDayIdx);
-  let h='<div class="dchead"><h2>'+DN[stDayIdx]+'</h2><span class="sub">'+d.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+'</span></div><div class="dfields">';
-  COLS.forEach(c=>{const v=day[c.k];const id="cf-"+c.k;
-    if(c.type==="yes")h+='<div class="dfield row"><span class="dl">'+esc(c.t)+'</span><button type="button" class="switch" role="switch" id="'+id+'" data-cf="'+c.k+'" aria-checked="'+(v===true)+'" aria-label="'+esc(c.t)+'"><i></i></button></div>';
-    else if(c.type==="pray")h+='<div class="dfield"><span class="dl">'+esc(c.t)+'</span><div class="seg pray" role="radiogroup" aria-label="Prayers on time">'+[0,1,2,3,4,5].map(n=>'<button type="button" role="radio" id="'+id+'-'+n+'" data-cf="prayers" data-v="'+n+'" aria-checked="'+(isNum(v)&&+v===n)+'">'+n+'</button>').join("")+'</div></div>';
-    else if(c.type==="text")h+='<div class="dfield wide"><label class="dl" for="'+id+'">'+esc(c.t)+'</label><input class="line-in" id="'+id+'" data-cf="'+c.k+'" value="'+esc(v||"")+'" placeholder="e.g. Mülk, first 10 ayahs"></div>';
-    else{const step=c.type==="dec"?0.5:1;h+='<div class="dfield"><label class="dl" for="'+id+'">'+esc(c.t)+'</label><div class="stepper"><button type="button" data-step="'+c.k+'" data-d="'+(-step)+'" aria-label="Less">−</button><input type="number" inputmode="decimal" min="0" step="'+(c.type==="dec"?"0.1":"1")+'" id="'+id+'" data-cf="'+c.k+'" value="'+(isNum(v)?esc(v):"")+'" placeholder="0"><button type="button" data-step="'+c.k+'" data-d="'+step+'" aria-label="More">+</button></div></div>';}
-  });
-  $("stDayCard").innerHTML=h+'</div>';
+// ---------- attendance ----------
+const ATT=[["ontime","On time"],["late","Late"],["absent","Absent"],["excused","Excused"]];
+let attDate=ymd(new Date());
+function attRec(d){return state.att[d]||{};}
+function attMark(d,s){return (attRec(d).marks||{})[s]||{};}
+function saveAtt(d){const rec=JSON.parse(JSON.stringify(attRec(d)));if(!db)return;
+  $("attStatus").textContent="Saving…";
+  const q=(queues["att"+d]||Promise.resolve()).then(()=>db.doc("attendance/"+d).set(rec)).then(()=>$("attStatus").textContent="Saved",e=>$("attStatus").textContent="Not saved — "+((e&&e.message)||"try again"));
+  queues["att"+d]=q;}
+function setMark(d,s,patch){const rec={...attRec(d)};const marks={...(rec.marks||{})};const m={...(marks[s]||{}),...patch};
+  if(!m.st)delete marks[s];else{if(m.st!=="late")delete m.min;marks[s]=m;}
+  rec.marks=marks;state.att={...state.att,[d]:rec};}
+function attStats(s){let att=0,on=0,late=0,abs=0,exc=0,mins=0,minN=0,lastAbs="";
+  Object.keys(state.att).sort().forEach(d=>{const m=attMark(d,s);
+    if(m.st==="ontime"){att++;on++;}else if(m.st==="late"){att++;late++;if(+m.min>0){mins+=+m.min;minN++;}}
+    else if(m.st==="absent"){abs++;lastAbs=d;}else if(m.st==="excused")exc++;});
+  const counted=att+abs;return {att,on,late,abs,exc,counted,rate:counted?Math.round(att/counted*100):null,avg:minN?Math.round(mins/minN):null,lastAbs};}
+function renderAttendance(){
+  if(!$("attRows"))return;
+  $("attDate").value=attDate;
+  const a=document.activeElement;
+  if(a!==$("attNote"))$("attNote").value=attRec(attDate).note||"";
+  const keep=a&&a.dataset&&a.dataset.am?a.id:null;
+  $("attRows").innerHTML=SIDS.map(s=>{const m=attMark(attDate,s);
+    return '<div class="arow"><span class="an">'+esc(student(s).name)+'</span><div class="seg att" role="radiogroup" aria-label="'+esc(student(s).name)+'">'+
+      ATT.map(([v,l])=>'<button type="button" role="radio" data-as="'+s+'" data-v="'+v+'" aria-checked="'+(m.st===v)+'">'+l+'</button>').join("")+'</div>'+
+      '<div class="amin"'+(m.st==="late"?'':' hidden')+'><input type="number" min="1" max="240" inputmode="numeric" id="am-'+s+'" data-am="'+s+'" value="'+(m.min||"")+'" placeholder="0" aria-label="Minutes late for '+esc(student(s).name)+'"><span>min late</span></div></div>';}).join("");
   if(keep&&$(keep))$(keep).focus();
-  $("stTable").innerHTML=cetTable(stDays,stWeek,stDayIdx);
+  const marked=SIDS.filter(s=>attMark(attDate,s).st).length;
+  const pres=SIDS.filter(s=>["ontime","late"].includes(attMark(attDate,s).st)).length;
+  const lt=SIDS.filter(s=>attMark(attDate,s).st==="late").length;
+  $("attCount").textContent=marked?pres+" of 5 present"+(lt?" · "+lt+" late":"")+(marked<5?" · "+(5-marked)+" not marked":""):"Nobody marked for this date yet.";
+  $("attDel").hidden=!state.att[attDate];
+  // totals
+  const dates=Object.keys(state.att).filter(d=>Object.keys(attRec(d).marks||{}).length).sort().reverse();
+  let A=0,C=0,L=0,M=0,MN=0;SIDS.forEach(s=>{const st=attStats(s);A+=st.att;C+=st.counted;L+=st.late;});
+  dates.forEach(d=>SIDS.forEach(s=>{const m=attMark(d,s);if(m.st==="late"&&+m.min>0){M+=+m.min;MN++;}}));
+  tween($("aSess"),dates.length,v=>String(v));
+  const rate=C?Math.round(A/C*100):null;$("aRate").textContent=rate==null?"—":rate+"%";$("aRateBar").style.width=(rate||0)+"%";
+  tween($("aLate"),L,v=>String(v));$("aAvg").textContent=MN?Math.round(M/MN)+" min":"—";
+  // cards
+  $("attCards").innerHTML=SIDS.map(s=>{const st=attStats(s);
+    const flag=st.late>=3&&st.late>=st.on;
+    return '<div class="ccard static'+(flag?' warn':'')+'"><span class="cn">'+esc(student(s).name)+'</span>'+
+      '<span class="cf"><b>'+(st.rate==null?"—":st.rate+"%")+'</b> attendance'+(st.counted?' · '+st.att+' of '+st.counted:'')+'</span>'+
+      '<div class="pc"><div class="track"><i style="width:'+(st.rate||0)+'%"></i></div></div>'+
+      '<dl><div><dt>On time</dt><dd>'+st.on+'</dd></div><div><dt>Late</dt><dd>'+st.late+'</dd></div><div><dt>Absent</dt><dd>'+st.abs+'</dd></div><div><dt>Avg late</dt><dd>'+(st.avg==null?"—":st.avg+"m")+'</dd></div></dl>'+
+      (flag?'<span class="wnote">Late more often than on time</span>':(st.lastAbs?'<span class="ca">Last absent '+esc(fmt(new Date(st.lastAbs+"T12:00")))+'</span>':''))+'</div>';}).join("");
+  // history
+  if(!dates.length){$("attHist").innerHTML='<tbody><tr><td class="empty-cell">No sessions recorded yet. Mark the first one above.</td></tr></tbody>';return;}
+  let h='<thead><tr><th scope="col">Date</th>'+SIDS.map(s=>'<th scope="col">'+esc(student(s).name)+'</th>').join("")+'<th scope="col">Present</th></tr></thead><tbody>';
+  dates.forEach(d=>{const p=SIDS.filter(s=>["ontime","late"].includes(attMark(d,s).st)).length;
+    h+='<tr class="'+(d===attDate?'sel':'')+'" data-ad="'+d+'" tabindex="0"><td>'+esc(new Date(d+"T12:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}))+(attRec(d).note?'<span class="hn">'+esc(attRec(d).note)+'</span>':'')+'</td>'+
+      SIDS.map(s=>{const m=attMark(d,s);let c='<span class="faint">·</span>';
+        if(m.st==="ontime")c='<span class="dot know"></span>';else if(m.st==="late")c='<span class="dot learning"></span>'+(m.min?'<span class="mm">'+m.min+'′</span>':'');
+        else if(m.st==="absent")c='<span class="dot not"></span>';else if(m.st==="excused")c='<b class="exc">E</b>';
+        return '<td><span class="hc">'+c+'</span></td>';}).join("")+'<td class="pn2">'+p+'/5</td></tr>';});
+  $("attHist").innerHTML=h+'</tbody>';
 }
-function stSet(key,val){const k=DK[stDayIdx];const day={...(stDays[k]||{})};if(val===""||val==null)delete day[key];else day[key]=val;stDays={...stDays,[k]:day};renderStudent();
-  const ref=stRef();const body={days:JSON.parse(JSON.stringify(stDays)),updated:new Date().toISOString()};stWrite(()=>ref.set(body));}
-$("stDayCard").addEventListener("click",e=>{
-  const sw=e.target.closest(".switch[data-cf]");if(sw){const k=sw.dataset.cf;stSet(k,!((stDays[DK[stDayIdx]]||{})[k]===true));return;}
-  const pr=e.target.closest("[data-cf=prayers]");if(pr){stSet("prayers",+pr.dataset.v);return;}
-  const st=e.target.closest("[data-step]");if(st){const k=st.dataset.step;const cur=+((stDays[DK[stDayIdx]]||{})[k]||0);let nv=Math.max(0,Math.round((cur+(+st.dataset.d))*10)/10);stSet(k,nv);}
-});
-$("stDayCard").addEventListener("change",e=>{const el=e.target;if(!el.dataset.cf||el.type==="button")return;const c=COLS.find(x=>x.k===el.dataset.cf);
-  if(c.type==="text")stSet(c.k,el.value.trim());else{const v=el.value.trim();stSet(c.k,v===""?"":Math.max(0,c.type==="dec"?Math.round(parseFloat(v)*10)/10:parseInt(v,10)||0));}});
-$("stDays").addEventListener("click",e=>{const b=e.target.closest("[data-day]");if(!b)return;stDayIdx=+b.dataset.day;renderStudent();const card=$("stDayCard");card.classList.remove("enter");void card.offsetWidth;card.classList.add("enter");});
-function stShift(n){stWeek=addDays(stWeek,n);stDayIdx=n>0?0:6;stSubscribe();}
-$("stPrev").onclick=()=>stShift(-7);$("stNext").onclick=()=>stShift(7);
-$("stThis").onclick=()=>{stWeek=mondayOf(new Date());stDayIdx=(new Date().getDay()+6)%7;stSubscribe();};
-async function startStudent(){
-  $("studentApp").hidden=false;
-  if(!db||!userCap){$("stJoin").hidden=true;$("stMain").hidden=true;stStatus("");
-    $("studentApp").querySelector(".privacy").textContent="Sign in with the email your mentor invited to fill in your çetele.";return;}
-  try{myId=await userCap.id();}catch(e){myId=null;}
-  if(!myId){$("studentApp").querySelector(".privacy").textContent="Your account could not be identified. Sign out and sign in again.";return;}
-  const me=db.doc("cetele/"+myId);
-  me.onSnapshot(sn=>{const d=sn.exists?sn.data():null;
-    if(d&&d.name){stName=d.name;$("stJoin").hidden=true;if($("stMain").hidden){$("stMain").hidden=false;stSubscribe();}else renderStudent();}
-    else{$("stJoin").hidden=false;$("stMain").hidden=true;}},
-    err=>{$("studentApp").querySelector(".privacy").textContent="Your çetele could not be opened. Ask your mentor to check your invitation.";});
-  $("stJoinForm").addEventListener("submit",e=>{e.preventDefault();const n=$("stNameIn").value.trim();if(!n)return;
-    stWrite(async()=>me.set({name:n,since:ymd(new Date()),email:((await userCap.me().catch(()=>({})))||{}).email||""}).catch(err=>{$("studentApp").querySelector(".privacy").textContent="Your name could not be saved. Ask your mentor to check your invitation.";throw err;}));});
-}
-
-// mentor çetele view
-let cWeek=mondayOf(new Date()),cStudents=[],cData={},cSubs={},cSel=null,cProfiles={};
-function cSubscribeWeeks(){Object.values(cSubs).forEach(u=>u());cSubs={};cData={};
-  cStudents.forEach(st=>{cSubs[st.id]=db.doc("cetele/"+st.id+"/weeks/"+wkOf(cWeek)).onSnapshot(sn=>{cData[st.id]=sn.exists?(sn.data().days||{}):{};renderCetele();});});renderCetele();}
-function renderCetele(){
-  $("cWeekLbl").textContent=weekLabel(cWeek);
-  $("cCount").textContent=cStudents.length?cStudents.length+" joined":"";
-  if(!cStudents.length){$("cCards").innerHTML='<div class="empty">No student has opened their çetele yet. Follow the steps below to invite them.</div>';$("cDetail").hidden=true;return;}
-  $("cCards").innerHTML=cStudents.map(st=>{const days=cData[st.id]||{};const t=totals(days);const f=DK.filter(k=>filled(days[k])).length;const acct=(cProfiles[st.id]&&cProfiles[st.id].name)||st.email||"";
-    return '<button type="button" class="ccard'+(cSel===st.id?' sel':'')+'" data-cs="'+st.id+'"><span class="cn">'+esc(st.name||"Unnamed")+'</span>'+(acct?'<span class="ca">'+esc(acct)+'</span>':'')+
-      '<span class="cf"><b>'+f+'/7</b> days filled</span><div class="pc"><div class="track"><i style="width:'+Math.round(f/7*100)+'%"></i></div></div>'+
-      '<dl><div><dt>Qur\'an</dt><dd>'+(t.quran||"—")+'</dd></div><div><dt>Book</dt><dd>'+(t.book||"—")+'</dd></div><div><dt>On time</dt><dd>'+(t.prayers||"—")+'</dd></div><div><dt>Screen</dt><dd>'+(t.screen?t.screen.replace(" avg","h"):"—")+'</dd></div></dl></button>';}).join("");
-  const sel=cStudents.find(x=>x.id===cSel);
-  if(sel){$("cDetail").hidden=false;$("cDetailName").textContent=(sel.name||"Unnamed")+"'s çetele";const acct=(cProfiles[sel.id]&&cProfiles[sel.id].name)||sel.email||"";$("cDetailAcct").textContent=acct?"Account: "+acct:"";$("cTable").innerHTML=cetTable(cData[sel.id]||{},cWeek,-1);}
-  else $("cDetail").hidden=true;
-}
-$("cCards").addEventListener("click",e=>{const b=e.target.closest("[data-cs]");if(!b)return;cSel=cSel===b.dataset.cs?null:b.dataset.cs;renderCetele();
-  if(cSel){const d=$("cDetail");d.classList.remove("enter");void d.offsetWidth;d.classList.add("enter");}});
-function cShift(n){cWeek=addDays(cWeek,n);cSubscribeWeeks();}
-$("cPrev").onclick=()=>cShift(-7);$("cNext").onclick=()=>cShift(7);$("cThis").onclick=()=>{cWeek=mondayOf(new Date());cSubscribeWeeks();};
+$("attDate").addEventListener("change",e=>{if(!e.target.value)return;attDate=e.target.value;renderAttendance();});
+$("attNote").addEventListener("change",e=>{const rec={...attRec(attDate),note:e.target.value.trim()};if(!rec.marks)rec.marks={};state.att={...state.att,[attDate]:rec};renderAttendance();saveAtt(attDate);});
+$("attRows").addEventListener("click",e=>{const b=e.target.closest("[data-as]");if(!b)return;const s=b.dataset.as,v=b.dataset.v;
+  setMark(attDate,s,{st:attMark(attDate,s).st===v?"":v});renderAttendance();saveAtt(attDate);
+  if(v==="late"&&attMark(attDate,s).st==="late"){const i=$("am-"+s);if(i)i.focus();}});
+$("attRows").addEventListener("change",e=>{const el=e.target;if(!el.dataset.am)return;const n=parseInt(el.value,10);
+  setMark(attDate,el.dataset.am,{min:n>0?Math.min(240,n):""});renderAttendance();saveAtt(attDate);});
+$("attAllOn").addEventListener("click",()=>{SIDS.forEach(s=>{if(!attMark(attDate,s).st)setMark(attDate,s,{st:"ontime"});});renderAttendance();saveAtt(attDate);});
+let delArm=0;
+$("attDel").addEventListener("click",()=>{const b=$("attDel");
+  if(Date.now()-delArm>4000){delArm=Date.now();b.textContent="Click again to delete";setTimeout(()=>{b.textContent="Delete this session";},4000);return;}
+  delArm=0;b.textContent="Delete this session";const d=attDate;const n={...state.att};delete n[d];state.att=n;renderAttendance();
+  if(db){$("attStatus").textContent="Deleting…";db.doc("attendance/"+d).delete().then(()=>$("attStatus").textContent="Deleted",er=>$("attStatus").textContent="Not deleted — "+((er&&er.message)||"try again"));}});
+$("attHist").addEventListener("click",e=>{const r=e.target.closest("[data-ad]");if(!r)return;attDate=r.dataset.ad;renderAttendance();
+  const sec=$("attRows").closest("section");if(sec)sec.scrollIntoView({behavior:document.documentElement.classList.contains("nomotion")?"auto":"smooth",block:"start"});});
+$("attHist").addEventListener("keydown",e=>{if(e.key==="Enter"){const r=e.target.closest("[data-ad]");if(r)r.click();}});
 
 // ---------- start ----------
 (async()=>{
   const conn=await connectSupabase();db=conn.db;userCap=conn.user;
   let owner=false;try{owner=userCap?await userCap.isOwner():false;}catch(e){}
   $("boot").hidden=true;
-  if(!owner){startStudent();return;}
+  if(!owner){$("noAccess").hidden=false;return;}
   // mentor (or a preview with no viewer information)
   $("mentorApp").hidden=false;
-  renderAll();renderCetele();moveInd();
+  renderAll();renderAttendance();moveInd();
   if(!db){$("offline").hidden=false;setStatus("Not connected");return;}
   setStatus("Up to date");
   db.doc("meta/settings").onSnapshot(s=>{state.settings=s.exists?{...s.data()}:{};applySettings();renderWeek();renderRoster();renderTajweed();renderSettings();
     if(!startApplied){startApplied=true;const sv=S().startView;if(sv&&!location.hash)showView(sv,false);}});
-  db.doc("meta/roster").onSnapshot(s=>{state.roster=(s.exists&&s.data().students)?{...s.data().students}:{};renderWeek();renderRoster();renderTajweed();renderLog();});
+  db.doc("meta/roster").onSnapshot(s=>{state.roster=(s.exists&&s.data().students)?{...s.data().students}:{};renderWeek();renderRoster();renderTajweed();renderLog();renderAttendance();});
   db.doc("meta/kitap").onSnapshot(s=>{state.kitap=s.exists?{...s.data()}:{};renderProg();});
   db.doc("meta/quran").onSnapshot(s=>{state.quran=s.exists?{...s.data()}:{};renderProg();});
   db.doc("meta/ezber").onSnapshot(s=>{state.ezber=s.exists?{...s.data()}:{};renderProg();});
@@ -1409,10 +1386,7 @@ $("cPrev").onclick=()=>cShift(-7);$("cNext").onclick=()=>cShift(7);$("cThis").on
   db.collection("events").onSnapshot(q=>{state.events=q.docs.map(d=>({id:d.id,...d.data()}));renderEvents();});
   db.collection("log").onSnapshot(q=>{state.log=q.docs.map(d=>({id:d.id,...d.data()}));renderLog();});
   subscribeWeek();
-  db.collection("cetele").onSnapshot(async q=>{const ids=q.docs.map(d=>d.id).join(",");const prev=cStudents.map(x=>x.id).join(",");
-    cStudents=q.docs.map(d=>({id:d.id,name:(d.data()||{}).name||"",email:(d.data()||{}).email||""})).sort((a,b)=>a.name.localeCompare(b.name));
-    if(ids!==prev)cSubscribeWeeks();else renderCetele();
-    try{if(userCap&&cStudents.length){cProfiles=await userCap.profiles(cStudents.map(x=>x.id));renderCetele();}}catch(e){}});
+  db.collection("attendance").onSnapshot(q=>{const m={};q.docs.forEach(d=>{m[d.id]=d.data();});state.att=m;renderAttendance();renderLog();});
 })();
 })();
 </script>
